@@ -9,7 +9,7 @@ and [ChainSecurity](https://chainsecurity.com). The core
 behind Securify was conducted at the [ICE Center](http://ice.ethz.ch) at ETH
 Zurich.
 
-It is the successor of the popular Securify security scanner (you can find the old version [here](#)).
+It is the successor of the popular Securify security scanner (you can find the old version [here](https://github.com/eth-sri/securify)).
 
 
 Features

@@ -9,7 +9,7 @@ Securify 2.0 is a security scanner for Ethereum smart contracts supported by the
 Foundation](https://ethereum.github.io/blog/2018/08/17/ethereum-foundation-grants-update-wave-3/)
 and [ChainSecurity](https://chainsecurity.com). The core
 [research](https://files.sri.inf.ethz.ch/website/papers/ccs18-securify.pdf)
-behind Securify was conducted at the [ICE Center](http://ice.ethz.ch) at ETH
+behind Securify was conducted at the [Secure, Reliable, and Intelligent Systems Lab](https://www.sri.inf.ethz.ch/) at ETH
 Zurich.
 
 It is the successor of the popular Securify security scanner (you can find the old version [here](https://github.com/eth-sri/securify)).

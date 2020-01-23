@@ -1,6 +1,9 @@
 Securify 2.0
 ===
 
+![securify](/img/securify-v2-0.jpg)
+
+
 Securify 2.0 is a security scanner for Ethereum smart contracts supported by the
 [Ethereum
 Foundation](https://ethereum.github.io/blog/2018/08/17/ethereum-foundation-grants-update-wave-3/)

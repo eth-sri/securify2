@@ -1,8 +1,7 @@
-Securify 2.0
-===
-
 ![securify](/img/securify-v2-0.png)
 
+Securify v2.0
+===
 
 Securify 2.0 is a security scanner for Ethereum smart contracts supported by the
 [Ethereum

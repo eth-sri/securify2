@@ -4,6 +4,7 @@ import importlib
 import inspect
 import pkgutil
 import textwrap
+import json
 from dataclasses import dataclass
 from functools import reduce
 from itertools import groupby
@@ -161,6 +162,102 @@ def print_pattern_matches(analysis_context, matches, skip_compliant=False, inclu
                 print_styled(msg, Color.PURPLE)
 
             prev_msg = msg
+
+def print_pattern_matches_json(analysis_context, matches, skip_compliant=False, include_contracts='all', exclude_contracts=[]):
+
+    """
+    Format:
+    { "VIOLATION": { "CRITICAL" : [{name, description, [locations]}]},"HIGH": ...
+      "WARNING": ...}
+    """
+
+    from securify.analyses.patterns.abstract_pattern import MatchComment, MatchSourceLocation
+
+
+    m_dicts = []
+
+    m_dict_prev = {"name": None}
+    append = False
+
+    for m in matches:
+
+        m_dict = {"severity": m.severity.name,
+                  "name": m.name,
+                  "type": str(m.type).split(".")[1],
+                  "description": m.description
+                 }
+
+        if m_dict_prev["name"] == m_dict["name"]:
+            m_dict = m_dict_prev
+            locations = m_dict["locations"]
+            append = True
+        else:
+            locations = []
+
+        prev_loc = None
+
+        for location in m.find_info(MatchSourceLocation):
+
+            if include_contracts != 'all' and location.contract not in include_contracts:
+                continue
+
+            if location.contract in exclude_contracts:
+                continue
+
+            loc = {"contract": location.contract, "line": location.line}
+            if prev_loc == loc:
+                continue
+
+            locations.append(loc)
+            prev_loc = loc
+
+        if not locations: continue
+
+        m_dict["locations"] = locations
+        if append:
+            append = False
+            continue
+        m_dict_prev = m_dict
+        m_dicts.append(m_dict)
+
+    def nest_by(dict, field, value):
+        new = [m for m in m_dicts if m.get(field, None) == value]
+        for n in new:
+            del n[field]
+        return new
+
+    violations = nest_by(m_dicts, "type", "VIOLATION")
+    violations = {"CRITICAL": nest_by(violations, "severity", "CRITICAL"),
+                  "HIGH": nest_by(violations, "severity", "HIGH"),
+                  "MEDIUM": nest_by(violations, "severity", "MEDIUM"),
+                  "LOW": nest_by(violations, "severity", "LOW"),
+                  "INFO": nest_by(violations, "severity", "INFO")
+                  }
+
+    warnings = nest_by(m_dicts, "type", "WARNINGS")
+    warnings = {"CRITICAL": nest_by(warnings, "severity", "CRITICAL"),
+                "HIGH": nest_by(warnings, "severity", "HIGH"),
+                "MEDIUM":  nest_by(warnings, "severity", "MEDIUM"),
+                "LOW": nest_by(warnings, "severity", "LOW"),
+                "INFO": nest_by(warnings, "severity", "INFO")}
+
+    compliant = nest_by(m_dicts, "type", "COMPLIANT")
+    compliant = {"CRITICAL": nest_by(compliant, "severity", "CRITICAL"),
+                 "HIGH": nest_by(compliant, "severity", "HIGH"),
+                 "MEDIUM": nest_by(compliant, "severity", "MEDIUM"),
+                 "LOW": nest_by(compliant, "severity", "LOW"),
+                 "INFO": nest_by(compliant, "severity", "INFO")}
+
+    if skip_compliant:
+        m_dicts = {"VIOLATION": violations, "WARNINGS": warnings}
+    else:
+        m_dicts = {"VIOLATION": violations, "WARNINGS": warnings, "COMPLIANT": compliant}
+
+    output = json.dumps(m_dicts)
+    print(output)
+
+
+
 
 
 def format_match(analysis_context, pattern, match, include_contracts='all', exclude_contracts=[]):

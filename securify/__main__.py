@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from securify.analyses.analysis import discover_patterns, AnalysisContext, AnalysisConfiguration, print_pattern_matches
+from securify.analyses.analysis import discover_patterns, AnalysisContext, AnalysisConfiguration, print_pattern_matches, print_pattern_matches_json
 from securify.solidity import solidity_ast_compiler, solidity_cfg_compiler
 from securify.staticanalysis import static_analysis
 from securify.staticanalysis.factencoder import encode
@@ -139,6 +139,7 @@ def parse_arguments():
                                default=False)
 
     parser.add_argument('--visualize', '-v', help='Visualize AST', action='store_true')
+    parser.add_argument('--output-json', '-j', help='Output in JSON format', action='store_true')
 
 
     etherscan_group = parser.add_argument_group('Etherscan API')
@@ -277,9 +278,15 @@ def main():
         matches.extend(pattern.find_matches())
 
     skip_compliant = not args.show_compliants
-    print_pattern_matches(context, matches, skip_compliant=skip_compliant,
-                          include_contracts=args.include_contracts,
-                          exclude_contracts=args.exclude_contracts)
+
+    if args.output_json:
+        print_pattern_matches_json(context, matches, skip_compliant=skip_compliant,
+                                   include_contracts=args.include_contracts,
+                                   exclude_contracts=args.exclude_contracts)
+    else:
+        print_pattern_matches(context, matches, skip_compliant=skip_compliant,
+                              include_contracts=args.include_contracts,
+                              exclude_contracts=args.exclude_contracts)
 
 
 if __name__ == '__main__':

@@ -139,7 +139,8 @@ def parse_arguments():
                                default=False)
 
     parser.add_argument('--visualize', '-v', help='Visualize AST', action='store_true')
-    parser.add_argument('--output-json', '-j', help='Output in JSON format', action='store_true')
+    parser.add_argument('--output-json', '-j', help='Output in JSON format. \
+                                                    Notice that the rest of the output will be suppressed.', action='store_true')
 
 
     etherscan_group = parser.add_argument_group('Etherscan API')
@@ -231,8 +232,14 @@ def fix_pragma(contract):
 
 def main():
 
+    save_stdout = sys.stdout
+
 
     args = parse_arguments()
+
+    # suppress the output when outputting json
+    if args.output_json:
+        sys.stdout = open('/tmp/securify_suppressed.out', 'w')
 
     prepare_env(binary=args.solidity)
 
@@ -279,6 +286,7 @@ def main():
 
     skip_compliant = not args.show_compliants
 
+    sys.stdout = save_stdout
     if args.output_json:
         print_pattern_matches_json(context, matches, skip_compliant=skip_compliant,
                                    include_contracts=args.include_contracts,

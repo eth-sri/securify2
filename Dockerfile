@@ -1,4 +1,5 @@
 FROM ubuntu:18.04
+ARG SOLC=0.5.12
 
 # install basic packages
 RUN apt-get update && apt-get install -y\
@@ -25,10 +26,13 @@ RUN wget https://github.com/souffle-lang/souffle/releases/download/1.6.2/souffle
 RUN apt-get update && apt-get -y install\
         graphviz \
         python3.7 \
-        python3-pip
+        python3-pip \
+	curl
 
-# install ethereum
-RUN add-apt-repository ppa:ethereum/ethereum && apt-get update && apt-get install solc
+# install the required solc vesion
+RUN curl -L https://github.com/ethereum/solidity/releases/download/v$SOLC/solc-static-linux > /usr/bin/solc-$SOLC && \
+    chmod +x /usr/bin/solc-$SOLC && \
+    ln -s /usr/bin/solc-$SOLC /usr/local/bin/solc
 
 COPY requirements.txt /requirements.txt
 

@@ -98,6 +98,8 @@ Usage
 ===
 
 ## Analyzing a contract
+Currently Securify2 supports only flat contracts, i.e., contracts that do not contain import statements.
+
 To analyze a local contract simply run:
 ```
 securify <contract_source>.sol [--use-patterns Pattern1 Pattern2 ...]
@@ -162,12 +164,12 @@ Supported vulnerabilities
 | 36 | ExternalFunctions | Info | `external-function` | - | 
 | 37 | StateVariablesDefaultVisibility | Info | - | [SWC-108](https://swcregistry.io/docs/SWC-108) |
 
-The following Slither patterns are not checked by the by Securify since they are checked by the Solidity compiler (ver. 0.5.8):
+The following Slither patterns are not checked by Securify since they are checked by the Solidity compiler (ver. 0.5.8):
 - `constant-function`
 - `deprecated-standards`
 - `pragma`
 
-The following SWC vulnerabilities do not apply to Solidity contracts with pragma >=0.8 and are therefore not checked by Securify:
+The following SWC vulnerabilities do not apply to Solidity contracts with pragma >=5.8 and are therefore not checked by Securify:
 
 - SWC-118 (Incorrect Constructor Name)
 - SWC-129 (Usage of +=)

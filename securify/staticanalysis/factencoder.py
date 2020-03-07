@@ -209,7 +209,28 @@ def encode(cfg):
             r = MapStoreFact(ids[node], ids[node.mapping], ids[node.index], ids[node.expr])
 
         elif isinstance(node, ir.MemberLoad):
-            r = StructLoadFact(ids[node], ids[node.base], node.member)
+            '''
+            There is the case where we are referencing a contract or a library. Then the type of the base will be
+            NotImplementedNode. In this case we should skip the member load.
+            Consider the following contract:
+            library Decimal {
+                struct D256 {
+                    uint256 value;
+                }
+            }
+
+            contract TestStructs {
+                    constructor() public {
+                    Decimal.D256(111);
+                }
+            }
+            Here we don't want to do the MemberLoad Decimal.D256
+            '''
+
+            if isinstance(node.base, ir.NotImplementedNode):
+                r = None
+            else:
+                r = StructLoadFact(ids[node], ids[node.base], node.member)
 
         elif isinstance(node, ir.MemberStore):
             r = StructStoreFact(ids[node], ids[node.base], node.member, ids[node.expr])

@@ -3,6 +3,7 @@ from __future__ import annotations
 from decimal import Decimal
 from itertools import takewhile
 from typing import Set
+from functools import reduce
 
 from .solidity_builtins import *
 from .solidity_modifiers import *
@@ -936,6 +937,7 @@ class GotoMixin(VarStateMixin):
 
         goto = ir.Goto(self, target, arg_values)
         cfg_builder += CfgSimple.statement(goto)
+        cfg_builder.visualize_and_display("goto","svg")
         cfg_builder += (cfg_from.last_appendable, goto)
         cfg_builder += (goto, target)
 
@@ -943,6 +945,78 @@ class GotoMixin(VarStateMixin):
 
 
 # region Control Flow
+
+@production
+class TryStatement(Statement, GotoMixin):
+    external_call: FunctionCall
+    clauses: List[TryCatchClause]
+
+    arguments_join = synthesized()
+
+    #@pushdown
+    #def push_variables(self, external_call) -> VarStateMixin.variables_pre @ {external_call}:
+    #    return external_call.variables_post
+
+    @synthesized
+    def variables_post(self):
+        return {**self.variables_pre} # **to_map(self.arguments_join, value=2)}
+
+    @synthesized
+    def changed_variables(self, clauses):
+        return reduce(lambda a,b : a|b, [c.changed_variables for c in clauses])
+
+    @synthesized
+    def arguments_join(self):
+        ret = self.transfer_arguments(self.changed_variables)
+        return  ret
+
+    @synthesized
+    def control_flow_statements(self, clauses):
+        return reduce(lambda a,b : a|b, [c.control_flow_statements for c in clauses])
+
+    @synthesized
+    def cfg(self, external_call, clauses):
+        block_join = ir.Block(self, info="TRYCATCH_JOIN", args=list(map(__[1], self.arguments_join)))
+
+        cfg_builder = external_call.cfg
+        cfg_builder_simple = cfg_builder
+        #cfg_builder += CfgSimple.statement(block_join)
+
+        cfg_clauses = []
+        arg_clauses = []
+        for c in clauses:
+            block_clause = ir.Block(c, info="TRY_CLAUSE")
+            cfg_clause = c.cfg << block_clause
+            cfg_clauses.append(cfg_clause)
+            arg_clause = self.get_arguments(c.variables_post, self.arguments_join)
+            arg_clauses.append(arg_clause)
+
+        cfg_builder = cfg_builder >> cfg_clauses
+        cfg_builder.visualize_and_display("split","svg")
+
+        cfg_builder += CfgSimple.statement(block_join)
+
+        for c,a in zip(cfg_clauses,arg_clauses):
+            cfg_builder = self.add_goto(cfg_builder, c, block_join, a, only_if_appendable=True)
+
+
+        cfg_builder >>= CfgSimple.statements(*map(__[2], self.arguments_join))
+        cfg_builder.visualize_and_display("joins","svg")
+
+        # TODO: This needs to change
+        return cfg_builder_simple >> clauses[0].cfg
+        #return cfg_builder
+
+@production
+class TryCatchClause(Statement):
+    block: Statement #TODO check type
+    parameters: Optional[ParameterList]
+
+    @synthesized
+    def cfg(self, block):
+        return block.cfg
+
+
 
 # noinspection PyMethodOverriding
 @production
@@ -1015,6 +1089,7 @@ class IfStatement(Statement, GotoMixin):
 
             cfg_builder >>= CfgSimple.statements(*map(__[2], self.arguments_join))
 
+        cfg_builder.visualize_and_display("joins","svg")
         return cfg_builder
 
 

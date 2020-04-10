@@ -300,7 +300,12 @@ def single_element(s, or_else=...):
             return or_else
         raise ValueError("Set is empty.")
 
+
     if len(s) > 1:
+        # Hotfix for bug mentioned in solidity_grammar_core.IfStatement.cfg
+        # fixed = [x for x in s if not isinstance(x, cfg_ir.Block)]
+        # if len(fixed) == 1:
+        #     return fixed[0]
         set_string = "    " + "\n    ".join(map(repr, s))
         raise ValueError("Set contains more than one element."
                          f"Cannot select successor unambiguously from: \n"

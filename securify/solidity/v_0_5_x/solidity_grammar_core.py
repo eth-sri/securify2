@@ -937,7 +937,6 @@ class GotoMixin(VarStateMixin):
 
         goto = ir.Goto(self, target, arg_values)
         cfg_builder += CfgSimple.statement(goto)
-        cfg_builder.visualize_and_display("goto","svg")
         cfg_builder += (cfg_from.last_appendable, goto)
         cfg_builder += (goto, target)
 
@@ -981,6 +980,7 @@ class TryStatement(Statement, GotoMixin):
         cfg_builder = external_call.cfg
         cfg_builder_simple = cfg_builder
         #cfg_builder += CfgSimple.statement(block_join)
+        #cfg_builder >>= CfgSimple.empty()
 
         cfg_clauses = []
         arg_clauses = []
@@ -992,7 +992,7 @@ class TryStatement(Statement, GotoMixin):
             arg_clauses.append(arg_clause)
 
         cfg_builder = cfg_builder >> cfg_clauses
-        cfg_builder.visualize_and_display("split","svg")
+        # cfg_builder.visualize_and_display("split","svg")
 
         cfg_builder += CfgSimple.statement(block_join)
 
@@ -1001,11 +1001,11 @@ class TryStatement(Statement, GotoMixin):
 
 
         cfg_builder >>= CfgSimple.statements(*map(__[2], self.arguments_join))
-        cfg_builder.visualize_and_display("joins","svg")
+        # cfg_builder.visualize_and_display("joins","svg")
 
         # TODO: This needs to change
         return cfg_builder_simple >> clauses[0].cfg
-        #return cfg_builder
+        # return cfg_builder
 
 @production
 class TryCatchClause(Statement):
@@ -1089,7 +1089,7 @@ class IfStatement(Statement, GotoMixin):
 
             cfg_builder >>= CfgSimple.statements(*map(__[2], self.arguments_join))
 
-        cfg_builder.visualize_and_display("joins","svg")
+        # cfg_builder.visualize_and_display("joins","svg")
         return cfg_builder
 
 

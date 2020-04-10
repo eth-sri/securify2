@@ -226,7 +226,7 @@ class BoundLowLevelValueCall(BoundSendLikeCallableBase):
         self.flattened_expression_values = [self]
         # We short-circuit flattened expressions here so (new A).value has a builtin as an expression value
         self.cfg = self.bound_expression >> self.bound_cfg >> val_cfg >> gas_cfg >> transfer >> continuation
-        self.cfg.visualize_and_display("cfg")
+        # self.cfg.visualize_and_display("cfg")
         assert(True)
 
 

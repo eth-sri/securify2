@@ -1081,30 +1081,7 @@ class IfStatement(Statement, GotoMixin):
 
         cfg_builder = condition.cfg >> branch >> (cfg_true, cfg_false)
 
-        if self.is_reachable_next and (len(cfg_true.sinks_appendable) or len(cfg_false.sinks_appendable)):
-            '''
-            Consider also ir.cfgutils.single_element
-            (len(cfg_true.sinks_appendable) or len(cfg_false.sinks_appendable))
-            Maybe this shouldn't be here.
-            This a hotfix for the following case:
-            foo(){
-                if(true){
-                    self.destruct();
-                }else{
-                    self.destruct();
-                }
-            }
-            The above code will cause a crash:
-            The block corresponding to function foo will have to successors:
-            The first one is the normal if else the second one will be the return of foo.
-            The reason is that foo as a function must have a return (maybe in a new block).
-            However in our case the blocks from if and else are never joined. Hence,
-            the IF_JOIN block will be hanging directly under the definition of function foo. 
-            The problem with this solution is that there is a block with just a return statement
-            (the return statement that is never accessible due to self.destruct). This, however,
-            willl not cause problems to the analysis.
-            '''
-
+        if self.is_reachable_next:
             cfg_builder += CfgSimple.statement(block_join)
 
             cfg_builder = self.add_goto(cfg_builder, cfg_true, block_join, args_true, only_if_appendable=True)

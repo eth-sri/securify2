@@ -229,7 +229,34 @@ def build_function_cfg(f: cfg_ir.Function):
     for block_original, block in blocks.items():
         successor = block_original
         while True:
-            successor = cfg_simple.successor(successor)
+
+            successors = cfg_simple.graph.successors(successor)
+            if len(successors) > 1:
+                '''
+                Consider also ir.cfgutils.single_element
+                (len(cfg_true.sinks_appendable) or len(cfg_false.sinks_appendable))
+                Maybe this shouldn't be here.
+                This a hotfix for the following case:
+                foo(){
+                    if(true){
+                        self.destruct();
+                    }else{
+                        self.destruct();
+                    }
+                }
+                The above code will cause a crash:
+                The block corresponding to function foo will have to successors:
+                The first one is the normal if else the second one will be the return of foo.
+                The reason is that foo as a function must have a return (maybe in a new block).
+                However in our case the blocks from if and else are never joined. Hence,
+                the IF_JOIN block will be hanging directly under the definition of function foo. 
+                The problem with this solution is that there is a block with just a return statement
+                (the return statement that is never accessible due to self.destruct). This, however,
+                willl not cause problems to the analysis.
+                '''
+                successors = [s for s in successors if not isinstance(s, cfg_ir.Block)]
+
+            successor = single_element(successors)
 
             if isinstance(successor, ir.Expression):
                 block.add_stmt(ir.Statement(successor.ast_node, successor))
@@ -302,10 +329,6 @@ def single_element(s, or_else=...):
 
 
     if len(s) > 1:
-        # Hotfix for bug mentioned in solidity_grammar_core.IfStatement.cfg
-        # fixed = [x for x in s if not isinstance(x, cfg_ir.Block)]
-        # if len(fixed) == 1:
-        #     return fixed[0]
         set_string = "    " + "\n    ".join(map(repr, s))
         raise ValueError("Set contains more than one element."
                          f"Cannot select successor unambiguously from: \n"

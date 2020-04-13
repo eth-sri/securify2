@@ -16,7 +16,7 @@ It is the successor of the popular Securify security scanner (you can find the o
 
 Features
 ===
-- Supports 38 vulnerabilities (see [table](#) below)
+- Supports 38 vulnerabilities (see [table](#supported-vulnerabilities) below)
 - Implements novel context-sensitive static analysis written in Datalog
 - Analyzes contracts written in Solidity >= 0.5.8
 

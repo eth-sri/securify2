@@ -1719,17 +1719,24 @@ class Assignment(Expression):
     def variables_post(self):
         new_variables = self.variables_pre.copy()
 
+        # Related to a = b++
+        # we need to update the variables updated in the right hand side
+        if isinstance(self.right_hand_side,UnaryOperation):
+            for i, a in self.right_hand_side.variables_post.items():
+                new_variables[i] = a
+
         for identifier, assignment in self.assignments_local:
             new_variables[identifier.referenced_declaration] = assignment
 
         return new_variables
 
     @synthesized
-    def changed_variables(self, left_hand_side: {TupleExpression.flattened_expressions}):
+    def changed_variables(self, left_hand_side: {TupleExpression.flattened_expressions}, right_hand_side):
         lhs = as_array(left_hand_side.flattened_expressions if isinstance(left_hand_side, TupleExpression) else
                        left_hand_side)
-
-        return {i.referenced_declaration for i in lhs if self.is_local_variable(i)}
+        # TODO: fix this for the case (a,b) = (i++, j++)
+        rhs = right_hand_side.changed_variables if isinstance(right_hand_side, UnaryOperation) else {}
+        return {i.referenced_declaration for i in lhs if self.is_local_variable(i)}.union(rhs)
 
     # endregion
 

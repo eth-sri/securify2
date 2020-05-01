@@ -9,7 +9,7 @@ __all__ = [
     "BlockFact", "BlockStmtFact", "FollowsFact",
     "ArgumentFact", "StatementFact", "ContractStateVarFact",
     "AssignFact", "ConstFact", "UnaryOpFact", "BinaryOpFact",
-    "LoadFact", "StoreFact", "ArrayLoadFact", "ArrayStoreFact", "ArrayPushFact",
+    "LoadFact", "StoreFact", "ArrayLoadFact", "ArrayStoreFact", "ArrayPushFact", "ArrayPopFact",
     "MapLoadFact", "MapStoreFact", "StructLoadFact", "StructStoreFact",
     "GotoFact", "BranchFact", "ReturnFact", "JumpFact", "CallFact",
     "TransferArgumentFact", "UnknownBlockFact",
@@ -67,6 +67,7 @@ StoreFact = relation("store", id=SSAType, field=StateVarType, var_id=SSAType)
 ArrayLoadFact = relation("array_load", id=SSAType, id_array=SSAType, id_index=SSAType)
 ArrayStoreFact = relation("array_store", id=SSAType, id_array=SSAType, id_index=SSAType, id_var=SSAType)
 ArrayPushFact = relation("array_push", id=SSAType, id_array=SSAType, id_var=SSAType)
+ArrayPopFact = relation("array_pop", id=SSAType, id_array=SSAType)
 
 MapLoadFact = relation("map_load", id=SSAType, id_map=SSAType, id_key=SSAType)
 MapStoreFact = relation("map_store", id=SSAType, id_map=SSAType, id_key=SSAType, id_var=SSAType)
@@ -146,7 +147,7 @@ ContractStateVarFact = relation("state_variable",
 statement_facts = (
     AssignFact, ConstFact, UnaryOpFact, BinaryOpFact,
     LoadFact, ArrayLoadFact, MapLoadFact, StructLoadFact,
-    StoreFact, ArrayStoreFact, MapStoreFact, StructStoreFact, ArrayPushFact,
+    StoreFact, ArrayStoreFact, MapStoreFact, StructStoreFact, ArrayPushFact, ArrayPopFact,
     BuiltinVariableFact, BuiltinFunctionFact, SelfDestructFact, EmitFact,
     BalanceFact
 )

@@ -444,6 +444,20 @@ class PushBuiltin(SolidityBuiltInFunction):
         self.flattened_expression_values = [length]
         self.cfg = self.array_cfg >> CfgSimple.statements(push, length)
 
+class PopBuiltin(SolidityBuiltInFunction):
+    def __init__(self, array_expression_value, array_cfg):
+        super().__init__()
+        self.array_expression_value = array_expression_value
+        self.array_cfg = array_cfg
+
+    def setup_impl(self, call_info: FunctionCallInfo):
+        assert len(call_info.arguments) == 0
+        array = self.array_expression_value
+        pop = ir.ArrayPop(call_info.ast_node, array)
+        length = ir.UnaryOp(call_info.ast_node, "length", array)
+
+        self.flattened_expression_values = [length]
+        self.cfg = self.array_cfg >> CfgSimple.statements(pop, length)
 
 class AssertBaseBuiltin(SolidityBuiltInFunction):
     def __init__(self, revert):

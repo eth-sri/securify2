@@ -366,6 +366,15 @@ class ArrayPush(Expression):
     def __str__(self):
         return f'PUSH {self.expr} += [{self.expr}]'
 
+@dataclass(eq=False)
+class ArrayPop(Expression):
+    base: Expression
+    #expr: Expression
+    type_string: Optional[str] = None
+
+    def __str__(self):
+        return f'POP {self.base}'
+
 
 @dataclass(eq=False)
 class MappingLoad(Expression):

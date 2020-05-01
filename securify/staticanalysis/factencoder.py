@@ -202,6 +202,9 @@ def encode(cfg):
         elif isinstance(node, ir.ArrayPush):
             r = ArrayPushFact(ids[node], ids[node.base], ids[node.expr])
 
+        elif isinstance(node, ir.ArrayPop):
+            r = ArrayPopFact(ids[node], ids[node.base])
+
         elif isinstance(node, ir.MappingLoad):
             r = MapLoadFact(ids[node], ids[node.mapping], ids[node.index])
 

@@ -2266,6 +2266,8 @@ class MemberAccess(Expression, LValueMixin):
         if expression.type_identifier.startswith("t_array$") or expression.type_identifier.startswith("t_bytes"):
             if self.member_name == "push":
                 return PushBuiltin(expression_value, expression.cfg)
+            elif self.member_name == "pop":
+                return PopBuiltin(expression_value, expression.cfg)
             elif self.member_name == "length":
                 return ir.UnaryOp(self, "length", expression_value)
 

@@ -59,6 +59,8 @@ def visualize(facts):
                 rows.append([stmt.id, f" = ARRSTORE {stmt.id_array}[{stmt.id_index}] = {stmt.id_var}"])
             elif isinstance(stmt, ArrayPushFact):
                 rows.append([stmt.id, f" = ARRPUSH {stmt.id_array} += [{stmt.id_var}]"])
+            elif isinstance(stmt, ArrayPopFact):
+                rows.append([stmt.id, f" = ARRPOP {stmt.id_array}"])
             elif isinstance(stmt, ArrayLoadFact):
                 rows.append([stmt.id, f" = ARRLOAD {stmt.id_array}[{stmt.id_index}]"])
             elif isinstance(stmt, StructStoreFact):

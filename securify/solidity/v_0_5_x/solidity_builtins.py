@@ -129,8 +129,16 @@ class BoundFunction(BoundFunctionBase):
                            val, gas)
 
         self.flattened_expression_values = returns
-        # self.cfg = self.bound_cfg >> val_cfg >> gas_cfg >> transfer >> continuation
-        self.cfg = self.member_access.cfg >> val_cfg >> gas_cfg >> transfer >> continuation
+
+        # Fix for serious bug. We need both bound_cfg and member_access_cfg:
+        # bound_cfg contains the msg.value: a.func.value(msg.value)(1)
+        # member_access_cfg contains the bound function
+        # However these two overlap resulting in a bug. We need to remove the intersection of them
+        nodes_common = self.bound_cfg.graph.nodes.intersection(self.member_access.cfg.graph.nodes)
+        member_access_cfg = self.member_access.cfg
+        for n in nodes_common:
+            member_access_cfg = member_access_cfg.remove(n)
+        self.cfg = self.bound_cfg >> member_access_cfg >> val_cfg >> gas_cfg >> transfer >> continuation
 
 
 class BoundDelegateCallable(BoundFunctionBase):

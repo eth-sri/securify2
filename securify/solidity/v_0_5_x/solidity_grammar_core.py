@@ -2318,7 +2318,7 @@ class MemberAccess(Expression, LValueMixin):
 @production
 class IndexAccess(Expression, LValueMixin):
     base_expression: Expression
-    index_expression: Expression
+    index_expression: Optional[Expression] # Should be optional type definitions e.g. uint256[] translate as IndexAccess
 
     # region VarStateMixin
     # TODO: track changed variables here
@@ -2333,7 +2333,8 @@ class IndexAccess(Expression, LValueMixin):
         else:
             return ir.ArrayLoad(self,
                                 base_expression.expression_value,
-                                index_expression.expression_value, self.type_string)
+                                # index_expression may be None when it refers to a type
+                                index_expression.expression_value if index_expression else None, self.type_string)
 
     @synthesized
     def assignment_generator(self, base_expression, index_expression):
@@ -2351,6 +2352,10 @@ class IndexAccess(Expression, LValueMixin):
 
     @synthesized
     def cfg(self, base_expression, index_expression):
+        if not index_expression:
+            # Hanlde no index case in case of type as given as argument.
+            # Consider the case abi.decode(data, uint256[]).
+            return base_expression.cfg
         return index_expression.cfg >> base_expression.cfg >> self.expression_value
 
     @synthesized

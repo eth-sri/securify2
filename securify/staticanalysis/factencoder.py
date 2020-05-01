@@ -8,6 +8,7 @@ from securify.solidity.solidity_cfg_compiler import compile_attributed_ast_from_
 from securify.staticanalysis.souffle.factformatter import format_facts_as_code, format_facts_as_csv
 from securify.staticanalysis.facts import *
 from securify.solidity.v_0_5_x import solidity_builtins
+from securify.solidity.utils import UndefinedAttribute
 
 __all__ = ["encode"]
 
@@ -243,6 +244,8 @@ def encode(cfg):
 
         elif isinstance(node, ir.BuiltinFunction):
             for i, arg in enumerate(node.arguments):
+                # We catch the case of abi.decode which accepts a tuple of types as argument
+                if isinstance(arg, UndefinedAttribute): continue
                 result.append(BuiltinFunctionFact(ids[node], node.name, ids[arg], i))
             r = None
 

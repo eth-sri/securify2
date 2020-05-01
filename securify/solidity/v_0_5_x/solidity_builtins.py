@@ -356,7 +356,11 @@ class SolidityBuiltInFunction(CallableImpl, ABC):
                 call_info.ast_node, name,
                 call_info.arguments)
 
-            self.flattened_expression_values = [expression_value]
+            # consider abi.decode: the resulted arity may be two:
+            # (a,b) = abi.decode(data, (uint, uint))
+            # TODO: make the builtin functions create a proper function call or make abi.decode return
+            # an array which is then assigned to each variable
+            self.flattened_expression_values = [expression_value for _ in range(call_info.result_arity)]
             self.cfg = CfgSimple.statement(expression_value)
 
         # noinspection PyTypeChecker
@@ -378,7 +382,6 @@ ECRecoverBuiltIn = SolidityBuiltInFunction.new("ecrecover", 4, language_specific
 
 AddMod = SolidityBuiltInFunction.new("addmod", 3, language_specific=False)
 MulMod = SolidityBuiltInFunction.new("mulmod", 3, language_specific=False)
-
 
 class GasLeftBuiltIn(SolidityBuiltInFunction):
     def setup_impl(self, call_info: FunctionCallInfo):

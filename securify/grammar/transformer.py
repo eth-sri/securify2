@@ -77,7 +77,10 @@ class DictTransformer(object):
                     if e is not None:
                         if isinstance(e, dict):
                             dummy = dict(e)
-                            dummy['name'] = "dummy_" + dummy['name']
+                            if 'memberName' in e:
+                                dummy['name'] = "dummy_" + dummy["memberName"]
+                            else:
+                                dummy['name'] = "dummy_" + dummy['name']
                             return dummy
                         else:
                             return None

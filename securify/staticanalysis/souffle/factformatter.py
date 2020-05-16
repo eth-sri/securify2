@@ -1,3 +1,4 @@
+import re
 __all__ = [
     "format_relation_decl",
     "format_facts_as_code",
@@ -53,7 +54,11 @@ def format_facts_as_code(facts, relations=None):
 
 def format_facts_as_csv(facts, delimiter='\t'):
     def format_fact(fact):
-        return delimiter.join(map(str, fact))
+        def to_str(s):
+            # replace white characters with space
+            # fix bug where constant 'a\nb would print part of the fact at the next line due to the \n char.
+            return re.sub(r"\s+", " ", str(s))
+        return delimiter.join(map(to_str, fact))
 
     result = {}  # TODO: Find out why  groupby(facts, type) does not work
 

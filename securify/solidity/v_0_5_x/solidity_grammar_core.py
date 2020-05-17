@@ -2251,6 +2251,7 @@ class MemberAccess(Expression, LValueMixin):
             "transfer": BoundTransferCall,
             "call": BoundLowLevelCall,
             "delegatecall": BoundDelegateCallable,
+            "staticcall": BoundDelegateCallable,
         }
 
         if self.member_name in builtin_call_types:

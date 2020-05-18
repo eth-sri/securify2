@@ -171,8 +171,13 @@ def encode(cfg):
             return
 
         if isinstance(node, ir.Assignment):
+
             if not isinstance(node.expr, solidity_builtins.BoundLowLevelValueCall):
-                r = AssignFact(ids[node], ids[node.expr])
+                # This is a fix for contracts test_minimal_robustness/interface_bug.sol
+                try:
+                    r = AssignFact(ids[node], ids[node.expr])
+                except KeyError:
+                    r = None
             else:
                 r = AssignFact(ids[node], ids[node.expr.bound_expression])
 

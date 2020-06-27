@@ -303,7 +303,30 @@ def encode(cfg):
         id_transfer = ids[transfer]
 
         def arg_facts(args, tid=None):
-            return [TransferArgumentFact(tid or id_transfer, ids[v], i) for i, v in enumerate(args)]
+            res = []
+            """
+            fix for bug:
+            contract Token {
+                modifier onlyOwner {
+                    _;
+                }
+
+                //function burn() onlyOwner public returns (bool) {
+                function burn() onlyOwner public returns (int) {
+
+                }
+
+            }
+            Where Const cannot be found in the ids. It is casued by the absense of return statement
+            """
+            for i, v in enumerate(args):
+                try:
+                    res.append(TransferArgumentFact(tid or id_transfer, ids[v], i))
+                except:
+                    continue
+            return res
+
+            #return [TransferArgumentFact(tid or id_transfer, ids[v], i) for i, v in enumerate(args)]
 
         if isinstance(transfer, ir.Goto):
             result.append(GotoFact(id_transfer, id_from, ids[transfer.block]))

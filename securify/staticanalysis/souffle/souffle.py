@@ -9,6 +9,7 @@ from .wrapper import (
     souffle_wrapper,
     get_souffle_binary_path
 )
+import securify.staticanalysis.facts as facts_module
 
 __all__ = ["is_souffle_available", "run_souffle", "generate_fact_files"]
 
@@ -105,3 +106,13 @@ def generate_fact_files(facts, fact_dir):
 
         with open(fact_file, 'w') as f:
             f.write("\n".join(facts))
+
+    for name, cls in facts_module.__dict__.items():
+        if not name in facts_module.__all__: continue
+        if "type" not in str(type(cls)): continue
+        fact_relation = cls.__dict__.get("_name", None)
+        if fact_relation is None: continue
+        fact_file = os.path.join(fact_dir, fact_relation + ".facts")
+        with open(fact_file, 'a') as f:
+            pass
+

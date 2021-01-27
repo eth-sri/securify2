@@ -2021,6 +2021,42 @@ class BinaryOperation(Expression):
     def cfg(self, left_expression, right_expression):
         return left_expression.cfg >> right_expression.cfg >> self.expression_value
 
+@production
+class FunctionCallOptions(Expression):
+    options: List[Expression]
+    names: List[str]
+
+    @synthesized
+    def expression_value(self):
+        expression_value = self.options[0].expression_value
+        member_load_args = {
+            "ast_node": self,
+            "base": expression_value,
+            "member": self.names[0],
+            "type_string": self.type_string,
+        }
+
+        bound_function_args = (self,
+                               expression_value,
+                               self.options[0].cfg,
+                               member_load_args)
+
+        builtin_call_types = {
+            "send": BoundSendCall,
+            "transfer": BoundTransferCall,
+            "call": BoundLowLevelCall,
+            "delegatecall": BoundDelegateCallable,
+            "staticcall": BoundDelegateCallable,
+        }
+
+        return builtin_call_types["call"](*bound_function_args)
+
+    @synthesized
+    def cfg(self):
+        return CfgSimple.empty()
+
+
+
 
 @production
 class FunctionCall(Expression, TupleMixin):
@@ -2054,6 +2090,7 @@ class FunctionCall(Expression, TupleMixin):
     def call_type(self, expression: {Expression.expression_value}):
         return ('conversion' if self.kind == 'typeConversion' else
                 'constructor' if self.kind == 'structConstructorCall' else
+                'builtin' if isinstance(expression, FunctionCallOptions) else
                 'builtin' if isinstance(expression.expression_value, CallableImpl) else
                 'new' if isinstance(expression, NewExpression) else
                 'jump')

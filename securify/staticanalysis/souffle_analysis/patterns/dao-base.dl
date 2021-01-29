@@ -10,16 +10,16 @@
     violationInContext(callCtx, "") :-
         applicableInContext(callCtx),
         storageMutation(store, _),
-        ctxProvider.elementInContext(callCtx, _, ctx),
-        ctxProvider.elementInContext(storeCtx, store, ctx),
+        ctxProvider.elementInContext(callCtx, _, _),
+        ctxProvider.elementInContext(storeCtx, store, _),
         programFlow.mustPrecede(callCtx, storeCtx).
 
     .decl storeAfterCall(store: ctxProvider.ElementInContext, call: ctxProvider.ElementInContext)
     storeAfterCall(storeCtx, callCtx) :-
         externalCall(call),
         storageMutation(store, _),
-        ctxProvider.elementInContext(storeCtx, store, ctx),
-        ctxProvider.elementInContext(callCtx, call, ctx),
+        ctxProvider.elementInContext(storeCtx, store, _),
+        ctxProvider.elementInContext(callCtx, call, _),
         programFlow.mayFollow(storeCtx, callCtx).
 
     .decl gasDependent(call: ctxProvider.ElementInContext)

@@ -22,20 +22,21 @@
         transferStacks.length(callerTransfers, l), l < TRANSFER_STACK_DEPTH.
 
     // Fallback Context
-    contextForCall(calleeFunction, transferToCallee, callerContext, calleeContext) :-
-        requestContextForCall(calleeFunction, transferToCallee, callerContext),
-        transferStacks.length(callerTransfers, callDepth),
-        callerContext = [callerFunction, callerTransfers, callerTag],
-        calleeContext = [calleeFunction, ["N/A", nil], "fallback"],
-        (
-            callDepth >= TRANSFER_STACK_DEPTH;
-            callerTag = "fallback"
-        ).
+    // This harms the domination analysis and prints warnings instead.
+    //contextForCall(calleeFunction, transferToCallee, callerContext, calleeContext) :-
+    //  requestContextForCall(calleeFunction, transferToCallee, callerContext),
+    //  transferStacks.length(callerTransfers, callDepth),
+    //  callerContext = [callerFunction, callerTransfers, callerTag],
+    //  calleeContext = [calleeFunction, ["N/A", nil], "fallback"],
+    //  (
+    //      callDepth >= TRANSFER_STACK_DEPTH;
+    //      callerTag = "fallback"
+    //  ).
 
-    contextForCall(calleeFunction, transferToCallee, callerContext, calleeContext) :-
-        requestFallbackContextForCall(calleeFunction, transferToCallee, callerContext),
-        callerContext = [callerFunction, callerTransfers, callerTag],
-        calleeContext = [calleeFunction, ["N/A", nil], "fallback"].
+    //contextForCall(calleeFunction, transferToCallee, callerContext, calleeContext) :-
+    //    requestFallbackContextForCall(calleeFunction, transferToCallee, callerContext),
+    //    callerContext = [callerFunction, callerTransfers, callerTag],
+    //    calleeContext = [calleeFunction, ["N/A", nil], "fallback"].
 
     contextToString([fun, tst, tag], STR_JOIN(funName, " [", str, "]")) :-
         contexts([fun, tst, tag]),

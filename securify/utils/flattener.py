@@ -60,7 +60,7 @@ def contractDefinition(jsonFile):
 def inheritanceSpecifier(jsonFile):
     
     baseName = getNodeType(jsonFile["baseName"])
-    arguments = "(" + commaBetweenElements(jsonFile["arguments"]) + ")" if "arguments" in jsonFile.keys() and jsonFile["arguments"]!=None else ""
+    arguments = "(" + commaBetweenElements(jsonFile["arguments"]) + ")" if "arguments" in jsonFile.keys() and jsonFile["arguments"] is not None else ""
     return baseName + arguments
 
 def functionDefinition(jsonFile):
@@ -75,7 +75,7 @@ def functionDefinition(jsonFile):
     visibility = jsonFile["visibility"] + " "
     stateMutability = jsonFile["stateMutability"] + " " if jsonFile["stateMutability"] in ("mutable","view","payable","pure") else ""
     virtual = "virtual " if "virtual" in jsonFile.keys() and jsonFile["virtual"] == True else ""
-    overrides= "override " + getNodeType(jsonFile["overrides"]) + " " if "overrides" in jsonFile.keys() and jsonFile["overrides"] != None else ""
+    overrides= "override " + getNodeType(jsonFile["overrides"]) + " " if "overrides" in jsonFile.keys() and jsonFile["overrides"] is not None else ""
     returnParameters = "returns " + getNodeType(jsonFile["returnParameters"]) if not getNodeType(jsonFile["returnParameters"]) == "()" else ""
     body = " " + getNodeType(jsonFile["body"]) +"\n\n" if jsonFile["implemented"] == True else (";\n" if len(parameters)+len(returnParameters) <79 else ";\n\n" )
 
@@ -92,7 +92,7 @@ def parameterlist(jsonFile):
 def modifierInvocation(jsonFile):
 
     listModifierName = getNodeType(jsonFile["modifierName"])
-    listArguments = "(" + commaBetweenElements(jsonFile["arguments"]) + ")" if "arguments" in jsonFile.keys() and jsonFile["arguments"]!= None else ""
+    listArguments = "(" + commaBetweenElements(jsonFile["arguments"]) + ")" if "arguments" in jsonFile.keys() and jsonFile["arguments"] is not None else ""
     return listModifierName + listArguments
 
 def block(jsonFile):
@@ -117,12 +117,12 @@ def variableDeclarationStatement(jsonFile):
 
 def returnStatement(jsonFile):
 
-    expression = "return " + (getNodeType(jsonFile["expression"]) if "expression" in jsonFile.keys() and jsonFile["expression"] != None else "")  + ";"
+    expression = "return " + (getNodeType(jsonFile["expression"]) if "expression" in jsonFile.keys() and jsonFile["expression"] is not None else "")  + ";"
     return expression
 
 def functionCall(jsonFile):
 
-    expression = getNodeType(jsonFile["expression"]) if "expression" in jsonFile.keys() and jsonFile["expression"] != None else ""
+    expression = getNodeType(jsonFile["expression"]) if "expression" in jsonFile.keys() and jsonFile["expression"] is not None else ""
     listArguments = "(" + commaBetweenElements(jsonFile["arguments"]) + ")"
 
     if jsonFile["kind"] == "typeConversion":
@@ -153,10 +153,10 @@ def variableDeclaration(jsonFile):
     indexed = " indexed" if "indexed" in jsonFile.keys() and jsonFile["indexed"] else ""
     immutable = " immutable" if "mutability" in jsonFile.keys() and (not jsonFile["mutability"] or jsonFile["mutability"]=="immutable") else ""
     storageLocation = " " + jsonFile["storageLocation"] if not jsonFile["storageLocation"] == "default" else ""
-    override = " override " + getNodeType(jsonFile["overrides"]) + " " if "overrides" in jsonFile.keys() and jsonFile["overrides"] != None else ""
+    override = " override " + getNodeType(jsonFile["overrides"]) + " " if "overrides" in jsonFile.keys() and jsonFile["overrides"] is not None else ""
     visibility = " " + jsonFile["visibility"] if jsonFile["stateVariable"] ==True else ""
     name = " " + jsonFile["name"] if not jsonFile["name"] == "" else ""
-    value = " = " + getNodeType(jsonFile["value"]) if "value" in jsonFile.keys() and jsonFile["value"] != None else ""
+    value = " = " + getNodeType(jsonFile["value"]) if "value" in jsonFile.keys() and jsonFile["value"] is not None else ""
     variableDeclaration = documentation + typeName + constant + indexed + immutable + storageLocation + override + visibility + name + value
     variableDeclaration = variableDeclaration[:-1] if (variableDeclaration == typeName and variableDeclaration[-1]==" ") else variableDeclaration
 
@@ -165,7 +165,7 @@ def variableDeclaration(jsonFile):
 def literal(jsonFile):
 
     constant = "constant" if jsonFile["isConstant"]==True else ""
-    value = jsonFile["value"] if "value" in jsonFile.keys() and jsonFile["value"] != None else ("hex\""+jsonFile["hexValue"]+"\"")
+    value = jsonFile["value"] if "value" in jsonFile.keys() and jsonFile["value"] is not None else ("hex\""+jsonFile["hexValue"]+"\"")
     value = "hex\""+jsonFile["hexValue"]+"\"" if jsonFile["kind"]=="hexString" else value
 
     if "\\" in value:
@@ -177,8 +177,8 @@ def literal(jsonFile):
         value = value.replace("\u0001","\\x01")
 
     value = value.replace("\a","\\a").replace("\r","\\r").replace("\t","\\t").replace("\f","\\f").replace("\v","\\v").replace("\b","\\b").replace("\n","\\n")
-    value = value if jsonFile["kind"]!="string" else ("\"" + value + "\"" if "value" in jsonFile.keys() and jsonFile["value"] != None else value)
-    subdenomination = " " + jsonFile["subdenomination"] if "subdenomination" in jsonFile.keys() and jsonFile["subdenomination"]!= None else ""
+    value = value if jsonFile["kind"]!="string" else ("\"" + value + "\"" if "value" in jsonFile.keys() and jsonFile["value"] is not None else value)
+    subdenomination = " " + jsonFile["subdenomination"] if "subdenomination" in jsonFile.keys() and jsonFile["subdenomination"] is not None else ""
     return constant + value + subdenomination
 
 def modifierDefinition(jsonFile):
@@ -188,7 +188,7 @@ def modifierDefinition(jsonFile):
     documentation = "    /**\n        * " + documentation.replace("\n","\n        * ") + "\n        */\n        " if not documentation is None else ""
     name = "modifier " + jsonFile["name"] + " "
     virtual = "virtual " if "virtual" in jsonFile.keys() and jsonFile["virtual"] == True else ""
-    overrides= "override " + getNodeType(jsonFile["overrides"]) + " " if "overrides" in jsonFile.keys() and jsonFile["overrides"] != None else ""
+    overrides= "override " + getNodeType(jsonFile["overrides"]) + " " if "overrides" in jsonFile.keys() and jsonFile["overrides"] is not None else ""
     listParameters = getNodeType(jsonFile["parameters"])
     body = getNodeType(jsonFile["body"])+ "\n\n"
     return documentation + name + listParameters + overrides + virtual + body
@@ -271,7 +271,7 @@ def yulBlock(jsonFile):
 def yulAssignment(jsonFile):
 
     variableNames = commaBetweenElements(jsonFile["variableNames"])
-    value = " := " + (getNodeType(jsonFile["value"]) if "value" in jsonFile.keys() and jsonFile["value"] != None else "")
+    value = " := " + (getNodeType(jsonFile["value"]) if "value" in jsonFile.keys() and jsonFile["value"] is not None else "")
     return variableNames + value
 
 def yulIdentifier(jsonFile):
@@ -380,7 +380,7 @@ def ifStatement(jsonFile):
 
     condition = "if (" + getNodeType(jsonFile["condition"]) + ")"
     trueBody = getNodeType(jsonFile["trueBody"])
-    falseBody = ("\n        else " + getNodeType(jsonFile["falseBody"])) if "falseBody" in jsonFile.keys() and jsonFile["falseBody"] != None else ""
+    falseBody = ("\n        else " + getNodeType(jsonFile["falseBody"])) if "falseBody" in jsonFile.keys() and jsonFile["falseBody"] is not None else ""
 
     if trueBody[-1] == "}":
         trueBody = trueBody[:-1] + "    }"
@@ -415,7 +415,7 @@ def unaryOperation(jsonFile):
 def indexAccess(jsonFile):
 
     baseExpression = getNodeType(jsonFile["baseExpression"])
-    indexExpression = "[" + (getNodeType(jsonFile["indexExpression"]) if "indexExpression" in jsonFile.keys() and jsonFile["indexExpression"] != None else "")  + "]"
+    indexExpression = "[" + (getNodeType(jsonFile["indexExpression"]) if "indexExpression" in jsonFile.keys() and jsonFile["indexExpression"] is not None else "")  + "]"
     return baseExpression + indexExpression
 
 def eventDefinition(jsonFile):
@@ -436,14 +436,14 @@ def emitStatement(jsonFile):
 def usingForDirective(jsonFile):
 
     libraryName = "using " + getNodeType(jsonFile["libraryName"]) + " for "
-    typeName = (getNodeType(jsonFile["typeName"]) if "typeName" in jsonFile.keys() and jsonFile["typeName"] != None else "*") + ";\n"
+    typeName = (getNodeType(jsonFile["typeName"]) if "typeName" in jsonFile.keys() and jsonFile["typeName"] is not None else "*") + ";\n"
     return libraryName + typeName
 
 def forStatement(jsonFile):
     
-    initializationExpression = "for (" + (getNodeType(jsonFile["initializationExpression"]) if "initializationExpression" in jsonFile.keys() and jsonFile["initializationExpression"]!=None else ";") + " "
-    condition = (getNodeType(jsonFile["condition"]) if "condition" in jsonFile.keys() and jsonFile["condition"] != None else "") + "; "
-    loopExpression = (getNodeType(jsonFile["loopExpression"]).replace(";","") if "loopExpression" in jsonFile.keys() and jsonFile["loopExpression"]!=None else "") +") "
+    initializationExpression = "for (" + (getNodeType(jsonFile["initializationExpression"]) if "initializationExpression" in jsonFile.keys() and jsonFile["initializationExpression"] is not None else ";") + " "
+    condition = (getNodeType(jsonFile["condition"]) if "condition" in jsonFile.keys() and jsonFile["condition"] is not None else "") + "; "
+    loopExpression = (getNodeType(jsonFile["loopExpression"]).replace(";","") if "loopExpression" in jsonFile.keys() and jsonFile["loopExpression"] is not None else "") +") "
     body = getNodeType(jsonFile["body"])
     return initializationExpression + condition + loopExpression + body
 
@@ -512,8 +512,8 @@ def tryStatement(jsonFile):
 
 def tryCatchClause(jsonFile):
 
-    errorName = jsonFile["errorName"] + " " if "errorName" in jsonFile.keys() and jsonFile["errorName"] != None else ""
-    parameters = getNodeType(jsonFile["parameters"]) if "parameters" in jsonFile.keys() and jsonFile["parameters"] != None else ""
+    errorName = jsonFile["errorName"] + " " if "errorName" in jsonFile.keys() and jsonFile["errorName"] is not None else ""
+    parameters = getNodeType(jsonFile["parameters"]) if "parameters" in jsonFile.keys() and jsonFile["parameters"] is not None else ""
     block = getNodeType(jsonFile["block"])
 
     return "\n        " + ("returns " + errorName + parameters + block if parameters != "" else ("catch" + errorName + block))
@@ -546,8 +546,8 @@ def uncheckedBlock(jsonFile):
 def indexRangeAccess(jsonFile):
 
     baseExpression = getNodeType(jsonFile["baseExpression"])
-    startExpression = "[" + (getNodeType(jsonFile["startExpression"]) if jsonFile["startExpression"] != None else "") + ":"
-    endExpression = (getNodeType(jsonFile["endExpression"]) if jsonFile["endExpression"] != None else "") + "]"
+    startExpression = "[" + (getNodeType(jsonFile["startExpression"]) if jsonFile["startExpression"] is not None else "") + ":"
+    endExpression = (getNodeType(jsonFile["endExpression"]) if jsonFile["endExpression"] is not None else "") + "]"
 
     return baseExpression + startExpression + endExpression
 
@@ -663,17 +663,17 @@ def commaBetweenElements(jsonFile):
 
     elements=""
 
-    if jsonFile!=None:
+    if jsonFile is not None:
         for i in range(0,len(jsonFile)):
-            elements += getNodeType(jsonFile[i]) if jsonFile[i]!=None else ""
+            elements += getNodeType(jsonFile[i]) if jsonFile[i] is not None else ""
             if i < len(jsonFile)-1:
                 elements+= ", "
     
     if len(elements)>79:
         elements = ""
-        if jsonFile!=None:
+        if jsonFile is not None:
             for i in range(0,len(jsonFile)):
-                elements += "\n                " + getNodeType(jsonFile[i]) if jsonFile[i]!=None else ""
+                elements += "\n                " + getNodeType(jsonFile[i]) if jsonFile[i] is not None else ""
                 if i < len(jsonFile)-1:
                     elements+= ","
                 else:
@@ -709,7 +709,8 @@ def generateFile(order, listFiles):
     if "pragma solidity ^0.5" in nodes or "pragma solidity 0.5" in nodes or "pragma solidity >=0.5" in nodes:
         nodes = nodes.replace("fallback","function")
         
-    return nodes
+    return nodes 
+
 def flatten(contract):
     
     arguments = ["solc", "--ast-compact-json", contract]

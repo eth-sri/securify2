@@ -16,7 +16,7 @@ Functions corresponding to a nodeType
 
 def sourceUnit(jsonFile):
 
-    license = "// SPDX-License-Identifier: " + jsonFile["license"] + "\n\n" if "license" in jsonFile.keys() and not jsonFile["license"] == None else ""
+    license = "// SPDX-License-Identifier: " + jsonFile["license"] + "\n\n" if "license" in jsonFile.keys() and not jsonFile["license"] is None else ""
     return license
 
 def pragmaDirective(jsonFile):
@@ -43,7 +43,7 @@ def contractDefinition(jsonFile):
 
     documentation = jsonFile["documentation"] if "documentation" in jsonFile.keys() else None
     documentation = documentation if type(documentation)== str else (getNodeType(documentation) if type(documentation)== dict else None)  #for solidity before 6
-    documentation = "/**\n* " + documentation.replace("\n","\n* ") + "\n*/\n" if not documentation == None else ""
+    documentation = "/**\n* " + documentation.replace("\n","\n* ") + "\n*/\n" if not documentation is None else ""
     abstract =  "abstract " if "abstract" in jsonFile.keys() and jsonFile["abstract"] else ""
     contractKind = jsonFile["contractKind"] + " "
     name = jsonFile["name"] + " "
@@ -67,7 +67,7 @@ def functionDefinition(jsonFile):
 
     documentation = jsonFile["documentation"] if "documentation" in jsonFile.keys() else None
     documentation = documentation if type(documentation)== str else (getNodeType(documentation) if type(documentation)== dict else None)  #for solidity before 6
-    documentation = "/**\n        * " + documentation.replace("\n","\n        * ") + "\n        */\n        " if not documentation == None else ""
+    documentation = "/**\n        * " + documentation.replace("\n","\n        * ") + "\n        */\n        " if not documentation is None else ""
     kind = jsonFile["kind"] + " "
     name = jsonFile["name"] + " "
     parameters = getNodeType(jsonFile["parameters"]) +  " "
@@ -108,7 +108,7 @@ def block(jsonFile):
 def variableDeclarationStatement(jsonFile):
 
     listDeclarations = commaBetweenElements(jsonFile["declarations"])
-    initialValue = (" = " + getNodeType(jsonFile["initialValue"]) if "initialValue" in jsonFile.keys() and not jsonFile["initialValue"]== None else "") + ";"
+    initialValue = (" = " + getNodeType(jsonFile["initialValue"]) if "initialValue" in jsonFile.keys() and not jsonFile["initialValue"] is None else "") + ";"
 
     if len(jsonFile["declarations"])>1:
         listDeclarations = "(" + listDeclarations + ")"
@@ -147,7 +147,7 @@ def variableDeclaration(jsonFile):
 
     documentation = jsonFile["documentation"] if "documentation" in jsonFile.keys() else None
     documentation = documentation if type(documentation)== str else (getNodeType(documentation) if type(documentation)== dict else None)  #for solidity before 6
-    documentation = "/**\n        * " + documentation.replace("\n","\n        * ") + "\n        */\n        " if not documentation == None else ""
+    documentation = "/**\n        * " + documentation.replace("\n","\n        * ") + "\n        */\n        " if not documentation is None else ""
     typeName = getNodeType(jsonFile["typeName"])
     constant = " constant" if jsonFile["constant"] else ""
     indexed = " indexed" if "indexed" in jsonFile.keys() and jsonFile["indexed"] else ""
@@ -185,7 +185,7 @@ def modifierDefinition(jsonFile):
 
     documentation = jsonFile["documentation"] if "documentation" in jsonFile.keys() else None
     documentation = documentation if type(documentation)== str else (getNodeType(documentation) if type(documentation)== dict else None)  #for solidity before 6
-    documentation = "    /**\n        * " + documentation.replace("\n","\n        * ") + "\n        */\n        " if not documentation == None else ""
+    documentation = "    /**\n        * " + documentation.replace("\n","\n        * ") + "\n        */\n        " if not documentation is None else ""
     name = "modifier " + jsonFile["name"] + " "
     virtual = "virtual " if "virtual" in jsonFile.keys() and jsonFile["virtual"] == True else ""
     overrides= "override " + getNodeType(jsonFile["overrides"]) + " " if "overrides" in jsonFile.keys() and jsonFile["overrides"] != None else ""
@@ -241,7 +241,7 @@ def memberAccess(jsonFile):
 def arrayTypeName(jsonFile):
 
     baseType = getNodeType(jsonFile["baseType"])
-    length = "["+ ("" if (not "length" in jsonFile.keys() or jsonFile["length"] == None) else (jsonFile["length"] if type(jsonFile["length"])==str else getNodeType(jsonFile["length"]))) + "]"
+    length = "["+ ("" if (not "length" in jsonFile.keys() or jsonFile["length"] is None) else (jsonFile["length"] if type(jsonFile["length"])==str else getNodeType(jsonFile["length"]))) + "]"
     return  baseType + length
 
 def structuredDocumentation(jsonFile):
@@ -422,7 +422,7 @@ def eventDefinition(jsonFile):
 
     documentation = jsonFile["documentation"] if "documentation" in jsonFile.keys() else None
     documentation = documentation if type(documentation)== str else (getNodeType(documentation) if type(documentation)== dict else None)  #for solidity before 6
-    documentation = "    /**\n        * " + documentation.replace("\n","\n        * ") + "\n        */\n        " if not documentation == None else ""
+    documentation = "    /**\n        * " + documentation.replace("\n","\n        * ") + "\n        */\n        " if not documentation is None else ""
     name = "event " + jsonFile["name"]
     parameters = getNodeType(jsonFile["parameters"])
     anonymous = " anonymous;\n" if "anonymous" in jsonFile.keys() and jsonFile["anonymous"] else ";\n"
@@ -627,7 +627,7 @@ def getNodeType(jsonFile):
         }
         func = switcher.get(nodeType)
            
-    if (func == None):
+    if (func is None):
         print("!!!!!\n")
         print("!!!!!\n")
         print("Flattener Error for type: " + nodeType)
@@ -710,7 +710,6 @@ def generateFile(order, listFiles):
         nodes = nodes.replace("fallback","function")
         
     return nodes
-
 def flatten(contract):
     
     arguments = ["solc", "--ast-compact-json", contract]

@@ -10,6 +10,7 @@ import re
 import semantic_version
 from securify.solidity.solidity_ast_compiler import  compiler_version
 import sys
+import importlib
 
 def get_list_of_patterns(context=AnalysisContext(), patterns='all', exclude_patterns=[], severity_inc=[], severity_exc=[]):
     pattern_classes = discover_patterns()

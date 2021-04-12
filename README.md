@@ -115,6 +115,10 @@ To get all the available patterns run:
 ```
 securify --list
 ```
+To manage the imports and generate a new flattened file that will be analyzed run:
+```
+securify <contract_source>.sol --flatten
+```
 
 Supported vulnerabilities
 ===

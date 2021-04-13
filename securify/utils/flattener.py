@@ -706,7 +706,7 @@ def generateFile(order, listFiles):
                     if node["nodeType"] != "ImportDirective":
                         nodes += getNodeType(node)
     
-    if "pragma solidity ^0.5" in nodes or "pragma solidity 0.5" in nodes or "pragma solidity >=0.5" in nodes:
+    if "pragma solidity ^0.5" in nodes or "pragma solidity 0.5" in nodes:
         nodes = nodes.replace("fallback","function")
         
     return nodes 

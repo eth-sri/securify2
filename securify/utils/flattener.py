@@ -711,19 +711,19 @@ def generateFile(order, listFiles):
         
     return nodes 
 
-def flatten(contract):
+def flatten(contract,binary=None):
     
-    arguments = ["solc", "--ast-compact-json", contract]
+    arguments = ["solc" if binary is None else binary, "--ast-compact-json", contract]
     proc = subprocess.run(arguments,stdout=subprocess.PIPE, universal_newlines=True)
     name = contract.split("/")[-1]
     
-    if(proc.returncode != 0):          
+    if(proc.returncode != 0):
         print("The contract doesn't compile with this version of solc")
         
     else:
         flattened_contract = "flattened_"+name
         fw = open(flattened_contract,"w")
-        listFiles =splitAstElements(proc.stdout.splitlines())   
+        listFiles =splitAstElements(proc.stdout.splitlines())
         fw.write(generateFile(orderToImport(contract,listFiles),listFiles))
         fw.close()
         return flattened_contract

@@ -254,7 +254,7 @@ def main():
     
     if args.flatten:
         my_module = importlib.import_module("securify.utils.flattener", package=".")
-        contract = my_module.flatten(contract)
+        contract = my_module.flatten(contract,args.solidity)
 
     if args.from_blockchain:
         contract = get_contract_from_blockchain(args.contract, args.key)
@@ -308,3 +308,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

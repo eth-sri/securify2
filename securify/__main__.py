@@ -10,6 +10,7 @@ import re
 import semantic_version
 from securify.solidity.solidity_ast_compiler import  compiler_version
 import sys
+import importlib
 
 def get_list_of_patterns(context=AnalysisContext(), patterns='all', exclude_patterns=[], severity_inc=[], severity_exc=[]):
     pattern_classes = discover_patterns()
@@ -88,6 +89,10 @@ def parse_arguments():
                         help="Set python stack maximum depth. This might be useful since some contracts might exceed this limit.",
                         type=int,
                         default=1000)
+                        
+    parser.add_argument("--flatten",
+                        help = "Create a flattened file based on the imports. The analyse will be done on this new file",
+                        action="store_true")
 
     pattern_group = parser.add_argument_group('Patterns')
 
@@ -246,6 +251,10 @@ def main():
     sys.setrecursionlimit(args.stack_limit)
 
     contract = args.contract
+    
+    if args.flatten:
+        my_module = importlib.import_module("securify.utils.flattener", package=".")
+        contract = my_module.flatten(contract,args.solidity)
 
     if args.from_blockchain:
         contract = get_contract_from_blockchain(args.contract, args.key)
@@ -299,3 +308,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

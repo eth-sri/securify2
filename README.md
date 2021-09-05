@@ -16,7 +16,7 @@ It is the successor of the popular Securify security scanner (you can find the o
 
 Features
 ===
-- Supports 38 vulnerabilities (see [table](#supported-vulnerabilities) below)
+- Supports 37 vulnerabilities (see [table](#supported-vulnerabilities) below)
 - Implements novel context-sensitive static analysis written in Datalog
 - Analyzes contracts written in Solidity >= 0.5.8
 
@@ -31,6 +31,8 @@ To run the container:
 ````angular2
 sudo docker run -it -v <contract-dir-full-path>:/share securify /share/<contract>.sol
 ````
+Note: to run the code via Docker with a Solidity version that is different than `0.5.12`, you will need to modify the variable `ARG SOLC=0.5.12` at the top of the `Dockerfile` to point to your version. After building with the correct version, you should not run into errors.
+
 
 
 Install

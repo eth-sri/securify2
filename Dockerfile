@@ -29,7 +29,7 @@ RUN apt-get update && apt-get -y install\
         python3-pip \
 	curl
 
-# install the required solc vesion
+# install the required solc version
 RUN curl -L https://github.com/ethereum/solidity/releases/download/v$SOLC/solc-static-linux > /usr/bin/solc-$SOLC && \
     chmod +x /usr/bin/solc-$SOLC && \
     ln -s /usr/bin/solc-$SOLC /usr/local/bin/solc

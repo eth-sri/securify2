@@ -122,6 +122,61 @@ To get all the available patterns run:
 securify --list
 ```
 
+## Options
+```
+usage: securify contract.sol [opts]
+
+securify: A static analyzer for Ethereum contracts.
+
+positional arguments:
+  contract              A contract to analyze. Can be a file or an address of
+                        a contract on blockchain
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --ignore-pragma       By default securify changes the pragma directives in
+                        contracts with pragma directives <= 0.5.8. Use this
+                        flag to ignore this functionality
+  --solidity SOLIDITY   Define path to solidity binary
+  --stack-limit STACK_LIMIT
+                        Set python stack maximum depth. This might be useful
+                        since some contracts might exceed this limit.
+  --visualize, -v       Visualize AST
+
+Patterns:
+  --list-patterns, -l   List the available patterns to check
+  --use-patterns USE_PATTERNS [USE_PATTERNS ...], -p USE_PATTERNS [USE_PATTERNS ...]
+                        Pattern names separated with spaces to include in the
+                        analysis, default='all'
+  --exclude-patterns EXCLUDE_PATTERNS [EXCLUDE_PATTERNS ...]
+                        Pattern names separated with spaces to exclude from
+                        the analysis
+  --include-severity INCLUDE_SEVERITY [INCLUDE_SEVERITY ...], -i INCLUDE_SEVERITY [INCLUDE_SEVERITY ...]
+                        Severity levels to include: CRITICAL, HIGH, MEDIUM,
+                        LOW, INFO
+  --exclude-severity EXCLUDE_SEVERITY [EXCLUDE_SEVERITY ...], -e EXCLUDE_SEVERITY [EXCLUDE_SEVERITY ...]
+                        Severity levels to exclude: CRITICAL, HIGH, MEDIUM,
+                        LOW, INFO
+  --include-contracts INCLUDE_CONTRACTS [INCLUDE_CONTRACTS ...], -c INCLUDE_CONTRACTS [INCLUDE_CONTRACTS ...]
+                        Contracts to include in the output
+  --exclude-contracts EXCLUDE_CONTRACTS [EXCLUDE_CONTRACTS ...]
+                        Contracts to exclude from the output
+  --show-compliants     Show compliant matches. Useful for debugging.
+
+Etherscan API:
+  --from-blockchain, -b
+                        The address of a contract in the Ethereum blockchain.
+  --key KEY, -k KEY     The file where the api-key for etherscan.io is stored.
+
+Compilation of Datalog code:
+  --interpreter         Use the souffle interpreter to run the datalog code.
+                        Particularly useful when experimenting with new
+                        patterns.
+  --recompile           Force recompilation of the datalog code.
+  --library-dir LIBRARY_DIR
+                        Directory of the functors' library.
+```
+
 Supported vulnerabilities
 ===
 

@@ -1685,7 +1685,7 @@ contract DarknodeRegistry is Claimable, CanReclaimTokens {
         require(address(_darknodePayment) != address(0x0), "DarknodeRegistry: invalid Darknode Payment address");
         IDarknodePayment previousDarknodePayment = darknodePayment;
         darknodePayment = _darknodePayment;
-        emit LogDarknodePaymentUpdated(previousDarknodePayment, darknodePayment);
+        emit LogDarknodePaymentUpdated(previousDarknodePayment, _darknodePayment);
     }
 
     /// @notice Allows the contract owner to update the minimum bond.
@@ -2179,7 +2179,7 @@ contract DarknodePayment is Claimable {
         require(address(_darknodeRegistry) != address(0x0), "DarknodePayment: invalid Darknode Registry address");
         DarknodeRegistry previousDarknodeRegistry = darknodeRegistry;
         darknodeRegistry = _darknodeRegistry;
-        emit LogDarknodeRegistryUpdated(previousDarknodeRegistry, darknodeRegistry);
+        emit LogDarknodeRegistryUpdated(previousDarknodeRegistry, _darknodeRegistry);
     }
 
     /// @notice Transfers the funds allocated to the darknode to the darknode
@@ -2328,7 +2328,7 @@ contract DarknodePayment is Claimable {
     function updatePayoutPercentage(uint256 _percent) external onlyOwner validPercent(_percent) {
         uint256 oldPayoutPercent = nextCyclePayoutPercent;
         nextCyclePayoutPercent = _percent;
-        emit LogPayoutPercentChanged(nextCyclePayoutPercent, oldPayoutPercent);
+        emit LogPayoutPercentChanged(_percent, oldPayoutPercent);
     }
 
     /// @notice Allows the contract owner to initiate an ownership transfer of

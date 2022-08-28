@@ -624,7 +624,7 @@ contract Secondary {
     function transferPrimary(address recipient) public onlyPrimary {
         require(recipient != address(0));
         _primary = recipient;
-        emit PrimaryTransferred(_primary);
+        emit PrimaryTransferred(recipient);
     }
 }
 

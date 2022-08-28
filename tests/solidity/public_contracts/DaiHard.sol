@@ -506,7 +506,7 @@ contract DAIHardTrade {
         }
 
         changePhase(Phase.Committed);
-        emit Committed(responder, commPubkey);
+        emit Committed(_responder, commPubkey);
 
         require(daiContract.transferFrom(msg.sender, address(this), getResponderDeposit()),
                                          "Can't transfer the required deposit from the DAI contract. Did you call approve first?"

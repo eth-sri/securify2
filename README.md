@@ -175,3 +175,14 @@ The following SWC vulnerabilities do not apply to Solidity contracts with pragma
 
 - SWC-118 (Incorrect Constructor Name)
 - SWC-129 (Usage of +=)
+
+
+Acknowledgments
+===
+The following people have contributed to Securify v2.0:
+
+- Ioannis Sachinoglou
+- Lavrentios Frobeen
+- Frederic Vogel
+- Dimitar Dimitrov
+- Petar Tsankov

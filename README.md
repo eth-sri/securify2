@@ -146,7 +146,7 @@ Supported vulnerabilities
 | 16 | ReentrancyNoETH | Medium | `reentrancy-no-eth` | [SWC-107](https://swcregistry.io/docs/SWC-107) |
 | 17 | TxOrigin | Medium |`tx-origin` | [SWC-115](https://swcregistry.io/docs/SWC-115) |
 | 18 | UnhandledException | Medium | `unchecked-lowlevel` | - |
-| 19 | UnrestrictedEtherFlow | Medium | `unchecked-send` |[SWC-105](https://swcregistry.io/docs/SWC-105) |
+| 19 | UnrestrictedEtherFlow | Medium | `arbitrary-send-eth` |[SWC-105](https://swcregistry.io/docs/SWC-105) |
 | 20 | UninitializedLocal | Medium | `uninitialized-local` | [SWC-109](https://swcregistry.io/docs/SWC-109) |
 | 21 | UnusedReturn | Medium | `unused-return` | [SWC-104](https://swcregistry.io/docs/SWC-104) |
 | 22 | ShadowedBuiltin | Low | `shadowing-builtin` | - |

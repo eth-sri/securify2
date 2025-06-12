@@ -43,7 +43,18 @@ COPY . /sec
 ENV PYTHONPATH /sec
 
 # install securify requirements
-RUN python3.7 setup.py install && python3.7 -m pip install --user -r /requirements.txt && python3.7 -m pip install requests
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    && add-apt-repository ppa:deadsnakes/ppa \
+    && apt-get update && apt-get install -y \
+    python3.7 \
+    python3.7-dev \
+    python3.7-distutils \
+    python3.7-venv \
+    python3-pip \
+    && apt-get clean
+    
+RUN python3.7 -m pip install --user -r /requirements.txt && python3.7 -m pip install requests
 
 RUN cd /sec/securify/staticanalysis/libfunctors/ && ./compile_functors.sh
 
